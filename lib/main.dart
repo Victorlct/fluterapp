@@ -6,7 +6,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'uma linda interface',
+      title: 'dev de flutter',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
@@ -32,15 +32,36 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _clickedButton = '';
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _showAlertDialog(String option) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(option),
+        content: Text('Parabéns por ter clicado nessa opção'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'Fechar');
+            },
+            child: const Text('Fechar'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Inicio'),
         leading: IconButton(
           icon: Icon(Icons.menu),
           onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
             setState(() {
               _clickedButton = 'menu';
             });
@@ -76,14 +97,13 @@ class _MyHomePageState extends State<MyHomePage> {
           preferredSize: Size.fromHeight(75.0),
         ),
       ),
-      body: Padding(
+      body:       
+      Padding(
         padding: EdgeInsets.all(32.0),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                PageTitleWidget(title: 'Grande titulo'),
-                ContainerWithBoxDecorationWidget(),
                 SizedBox(height: 42),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -103,66 +123,46 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class PageTitleWidget extends StatelessWidget {
-  final String title;
-
-  PageTitleWidget({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0), 
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 36.0,
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-    );
-  }
-}
-
-class ContainerWithBoxDecorationWidget extends StatelessWidget {
-  ContainerWithBoxDecorationWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 50.0, 
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25.0), 
-            color: Colors.grey[300], 
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 10.0,
-                offset: Offset(0.0, 10.0),
+       drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 116, 116, 116),
               ),
-            ],
-          ),
-          child: Center(
-            child: RichText(
-              text: TextSpan(
-                text: 'grande botao',
-                style: DefaultTextStyle.of(context).style,
+              child: Text(
+                'Menu Lateral',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
               ),
             ),
-          ),
+            ListTile(
+              leading: Icon(Icons.people),
+              title: Text('Pessoa'),
+              onTap: () {
+                _showAlertDialog('Pessoa');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.train),
+              title: Text('Trem?'),
+              onTap: () {
+                _showAlertDialog('Trem');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('Sobre'),
+              onTap: () {
+                _showAlertDialog('Sobre');
+              },
+            ),
+          ],
         ),
-      ],
+       ),
     );
   }
 }
@@ -216,3 +216,4 @@ class SquareButton extends StatelessWidget {
     );
   }
 }
+
